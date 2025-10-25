@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimenin Serüveni</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Kodları Başlangıcı */
+        
+        :root {
+            --ana-renk: #2c3e50;
+            --ikincil-renk: #3498db;
+            --kutu-bg: #ffffff;
+            --golge: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.15);
+            --kutu-golge-hover: 0 15px 30px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.2);
+            --arac-renk: #16a085;
+            
+            /* 6 Seviye için renkler */
+            --level-1: #3498db; /* Mavi */
+            --level-2: #e74c3c; /* Kırmızı */
+            --level-3: #1abc9c; /* Turkuaz */
+            --level-4: #f39c12; /* Turuncu */
+            --level-5: #9b59b6; /* Mor */
+            --level-6: #34495e; /* Koyu Mavi */
+        }
+
+        body {
+            font-family: "Marhey", sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 15px; 
+            color: var(--ana-renk);
+            font-size: 0.95rem; 
+        }
+
+        /* Başlık */
+        header {
+            text-align: center;
+            margin-bottom: 30px; 
+        }
+        header h1 {
+            font-size: 2.3rem;
+            margin: 0;
+        }
+        header h2 {
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 400;
+            color: #555;
+        }
+
+        /* Seviye Grid Yapısı */
+        .seviye-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Seviye Kutucukları */
+        .seviye-kutu {
+            background: var(--kutu-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--golge);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center; 
+            min-height: 240px; 
+            border-top: 5px solid transparent;
+        }
+        .seviye-kutu:hover {
+            transform: translateY(-10px) perspective(1000px) rotateX(2deg);
+            box-shadow: var(--kutu-golge-hover);
+        }
+        
+        .seviye-emoji {
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+        
+        /* DEĞİŞİKLİK: Oyun Tipi Etiketi "Kutusuz" hale getirildi */
+        .oyun-tipi {
+            font-size: 0.9rem; /* 0.85'ten 0.9'a yükseltildi */
+            font-weight: 700; /* 600'den 700'e (daha belirgin) */
+            /* padding, border-radius, color:white, background-color kaldırıldı */
+            margin-top: 10px; /* Linklerle arasına biraz boşluk eklendi */
+        }
+
+        .seviye-kutu h3 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            width: 100%; 
+        }
+
+        /* Linkler */
+        .linkler {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 0; /* 20px'ten 0'a düşürüldü, boşluk oyun-tipi'ne verildi */
+        }
+        .linkler a {
+            text-decoration: none;
+            background-color: var(--ikincil-renk);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 600; 
+            transition: background-color 0.2s, transform 0.2s;
+            font-size: 0.9rem;
+        }
+        .linkler a:hover {
+            background-color: #2980b9;
+            transform: scale(1.03);
+        }
+
+        /* Her seviye için renkler (Kutu Kenarlığı + BAŞLIK + ETİKET METNİ) */
+        .seviye-1 { border-top-color: var(--level-1); }
+        .seviye-1 h3 { color: var(--level-1); } 
+        .seviye-1 .oyun-tipi { color: var(--level-1); } /* DEĞİŞİKLİK: background-color yerine color */
+
+        .seviye-2 { border-top-color: var(--level-2); }
+        .seviye-2 h3 { color: var(--level-2); } 
+        .seviye-2 .oyun-tipi { color: var(--level-2); } /* DEĞİŞİKLİK */
+
+        .seviye-3 { border-top-color: var(--level-3); }
+        .seviye-3 h3 { color: var(--level-3); } 
+        .seviye-3 .oyun-tipi { color: var(--level-3); } /* DEĞİŞİKLİK */
+
+        .seviye-4 { border-top-color: var(--level-4); }
+        .seviye-4 h3 { color: var(--level-4); } 
+        .seviye-4 .oyun-tipi { color: var(--level-4); } /* DEĞİŞİKLİK */
+
+        .seviye-5 { border-top-color: var(--level-5); }
+        .seviye-5 h3 { color: var(--level-5); } 
+        .seviye-5 .oyun-tipi { color: var(--level-5); } /* DEĞİŞİKLİK */
+
+        .seviye-6 { border-top-color: var(--level-6); }
+        .seviye-6 h3 { color: var(--level-6); } 
+        .seviye-6 .oyun-tipi { color: var(--level-6); } /* DEĞİŞİKLİK */
+
+
+        /* Araçlar Butonu */
+        #araclar-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--ana-renk);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+        #araclar-btn:hover {
+            background-color: var(--ikincil-renk);
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* Araçlar Pop-up (Modal) */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+        .modal-icerik {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.4s;
+        }
+        .kapat-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .kapat-btn:hover,
+        .kapat-btn:focus {
+            color: #333;
+        }
+        .modal-icerik h4 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            color: var(--ana-renk);
+        }
+        .modal-icerik p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        /* Modal İçindeki Görsel Linkler */
+        .gorsel-linkler {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .gorsel-temsili { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--ana-renk);
+            font-weight: 600;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            transition: all 0.2s;
+            cursor: pointer; 
+        }
+        .gorsel-temsili:hover {
+            border-color: var(--ikincil-renk);
+            background-color: #f9f9f9;
+            color: var(--ikincil-renk);
+        }
+        
+        .gorsel-temsili img {
+            width: 130px;
+            height: 130px;
+            border-radius: 8px;
+            object-fit: contain; /* Görseli sığdır */
+            border: 1px solid #eee;
+            background-color: #fcfcfc;
+        }
+
+        /* Modal Buton Grubu */
+        .modal-buton-grup {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
+            margin-top: 25px;
+            align-items: center; 
+        }
+
+        /* İndirme Butonu Stili */
+        .indir-butonu {
+            display: inline-block;
+            text-decoration: none;
+            background-color: var(--ana-renk);
+            color: white !important;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s;
+            text-align: center;
+            min-width: 220px; 
+            box-sizing: border-box; 
+            font-size: 0.9rem;
+        }
+        .indir-butonu:hover {
+            background-color: #1a2531;
+            transform: scale(1.03);
+        }
+        
+        /* Kura Butonu Stili */
+        .kura-butonu {
+            background-color: var(--arac-renk); 
+        }
+        .kura-butonu:hover {
+            background-color: #117a65; 
+        }
+
+
+        /* Görsel Büyütme (Lightbox) Stilleri */
+        #lightbox-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            animation: fadeIn 0.3s;
+            cursor: pointer;
+        }
+        #lightbox-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 5px;
+        }
+        #lightbox-kapat {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        #lightbox-kapat:hover {
+            color: #bbb;
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        /* Mobil Uyum */
+        @media (max-width: 900px) {
+            .seviye-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            body { padding: 10px; }
+            .seviye-kutu {
+                min-height: auto;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            header h1 { 
+                font-size: 1.8rem; 
+            }
+            header h2 { 
+                font-size: 1.1rem; 
+            }
+            .modal-icerik { 
+                margin: 20% auto; 
+                padding: 20px;
+            }
+            .gorsel-linkler { 
+                flex-direction: column; 
+            }
+            
+            .seviye-emoji {
+                font-size: 2rem; 
+            }
+            .seviye-kutu h3 {
+                font-size: 1.1rem; 
+            }
+            .linkler a {
+                font-size: 0.9rem;
+                padding: 10px 12px; 
+            }
+            .oyun-tipi {
+                font-size: 0.85rem; /* Mobilde daha okunaklı olması için 0.8'den 0.85'e */
+            }
+        }
+
+        /* CSS Kodları Bitişi */
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Kelimenin Serüveni</h1>
+        <h2>Türkçede Kullanılan Arapça Kökenli Kelimeler</h2>
+    </header>
+
+    <main class="seviye-grid">
+        
+        <div class="seviye-kutu seviye-1">
+            <span class="seviye-emoji">🏆</span>
+            <h3>Seviye 1: En çok kelime bulan kazanır</h3>
+            <div class="linkler">
+                <a href="https://drive.google.com/drive/u/1/folders/1SZv9RifzYuV_M1XeTRa5raHMdZiqGS9h" target="_blank">Oyun 1 Materyalleri</a>
+                <a href="https://drive.google.com/drive/u/1/folders/1qAgDgOdc2jb3NBG1M3BjhaEK6ZOWYKv2" target="_blank">Oyun 2 Materyalleri</a>
+            </div>
+            <div class="oyun-tipi tip-takim">Takım Oyunu</div>
+        </div>
+
+        <div class="seviye-kutu seviye-2">
+            <span class="seviye-emoji">📊</span>
+            <h3>Seviye 2: Kalıplar tablosu</h3>
+            <div class="linkler">
+                <a href="httpsDers-Gere-leri/" target="_blank">Materyalleri İndir</a>
+            </div>
+            <div class="oyun-tipi tip-rekabet">İki Kişilik Oyun</div>
+        </div>
+
+        <div class="seviye-kutu seviye-3">
+            <span class="seviye-emoji">🧩</span>
+            <h3>Seviye 3: Bul kalıbı al puanı</h3>
+            <div class="linkler">
+                <a href="https://drive.google.com/drive/u/1/folders/1ad12alfSC8SZfRccnWMRo9u6RZRpvMe_" target="_blank">Oyun 1 Materyalleri</a>
+                <a href="https://drive.google.com/drive/u/1/folders/1_rQeM8HOCVWrspRAIlB5RGBJwXda_WPC" target="_blank">Oyun 2 Materyalleri</a>
+            </div>
+            <div class="oyun-tipi tip-takim">Takım Oyunu</div>
+        </div>
+
+        <div class="seviye-kutu seviye-4">
+            <span class="seviye-emoji">✌️</span>
+            <h3>Seviye 4: İkiki</h3>
+            <div class="linkler">
+                <a href="https.google.com/drive/u/1/folders/1FNhmM6AI-_4laXmFBzH_prKoIJUN2WlD" target="_blank">Materyalleri İndir</a>
+            </div>
+            <div class="oyun-tipi tip-rekabet">İki Kişilik Oyun</div>
+        </div>
+
+        <div class="seviye-kutu seviye-5">
+            <span class="seviye-emoji">🌳</span>
+            <h3>Seviye 5: Kökten gövdeye</h3>
+            <div class="linkler">
+                <a href="https.google.com/drive/u/1/folders/1pBr2JHvQDR59zYLeeLDXEByBN0N655jU" target="_blank">Materyalleri İndir</a>
+            </div>
+            <div class="oyun-tipi tip-takim">Takım Oyunu</div>
+        </div>
+
+        <div class="seviye-kutu seviye-6">
+            <span class="seviye-emoji">💬</span>
+            <h3>Seviye 6: Kök-kelime-cümle</h3>
+            <div class="linkler">
+                <a href="https.google.com/drive/u/1/folders/1EJHfTH9FGxvdNri75aPJsSmZnmta9b6l" target="_blank">Materyalleri İndir</a>
+            </div>
+            <div class="oyun-tipi tip-takim">Takım Oyunu</div>
+        </div>
+    </main>
+
+    <button id="araclar-btn" title="Araçlar"><i class="fas fa-tools"></i></button>
+
+    <div id="araclar-modal" class="modal">
+        <div class="modal-icerik">
+            <span class="kapat-btn">&times;</span>
+            
+            <h4>Vezinler-Kalıplar Tablosu</h4>
+            
+            <p>Bu materyal <strong>arkalı önlü</strong> çıktı alınmalı ve uzun ömürlü kullanım için <strong>lamine edilmelidir</strong>.</p>
+            <p>Görseli büyütmek için üzerine tıklayabilirsiniz:</p>
+            
+            <div class="gorsel-linkler">
+                
+                <div class="gorsel-temsili">
+                    <img src="sayfa1.png" alt="Sayfa 1 Çıktısı - Önyüz">
+                    <span>Önyüz</span>
+                </div>
+                
+                <div class="gorsel-temsili">
+                    <img src="sayfa2.png" alt="Sayfa 2 Çıktısı - Arkayüz">
+                    <span>Arkayüz</span>
+                </div>
+            </div>
+
+            <div class="modal-buton-grup">
+                <a href="https://drive.google.com/drive/u/1/folders/1aO1eAQ4OIZbfU9ccrgS6Gbu6RN1L_HnH" target="_blank" class="indir-butonu">
+                    <i class="fas fa-download"></i> İndir
+                </a>
+
+                <a href="https://gdmrbg7541.github.io/Ders-Gere-leri/" target="_blank" class="indir-butonu kura-butonu">
+                    <i class="fas fa-users"></i> Kura & Takım Oluştur
+                </a>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="lightbox-modal">
+        <span id="lightbox-kapat">&times;</span>
+        <img id="lightbox-img">
+    </div>
+    <script>
+        // --- Araçlar Modal'ı ---
+        const araclarModal = document.getElementById("araclar-modal");
+        const araclarBtn = document.getElementById("araclar-btn");
+        const araclarKapat = document.getElementsByClassName("kapat-btn")[0];
+
+        araclarBtn.onclick = function() {
+            araclarModal.style.display = "block";
+        }
+        araclarKapat.onclick = function() {
+            araclarModal.style.display = "none";
+        }
+        window.addEventListener("click", function(event) {
+            if (event.target == araclarModal) {
+                araclarModal.style.display = "none";
+            }
+        });
+
+
+        // --- Lightbox (Görsel Büyütme) Modal'ı ---
+        const lightboxModal = document.getElementById("lightbox-modal");
+        const lightboxImg = document.getElementById("lightbox-img");
+        const lightboxKapat = document.getElementById("lightbox-kapat");
+        
+        const gorselTetikleyiciler = document.querySelectorAll(".gorsel-temsili");
+
+        gorselTetikleyiciler.forEach(function(tetikleyici) {
+            tetikleyici.onclick = function() {
+                const imgElement = tetikleyici.querySelector("img");
+                const imgSrc = imgElement.getAttribute("src");
+                
+                if (imgSrc) {
+                    lightboxModal.style.display = "block";
+                    lightboxImg.setAttribute("src", imgSrc);
+                } else {
+                    console.log("Resim kaynağı bulunamadı.");
+                }
+            }
+        });
+
+        // Lightbox'ı kapatma (X butonu)
+        lightboxKapat.onclick = function() {
+            lightboxModal.style.display = "none";
+        }
+        
+        // Lightbox'ı kapatma (Arka plana tıklama)
+        lightboxModal.onclick = function(event) {
+            if (event.target == lightboxModal) { 
+                lightboxModal.style.display = "none";
+            }
+        }
+
+    </script>
+    </body>
+</html>
